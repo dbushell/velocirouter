@@ -33,6 +33,22 @@ router.all('/api/*', (request, response) => {
 
 Documentation coming...
 
+## Deno Server
+
+The `handle()` method forwards a `Request` via all matching routes in the order they were created. It will resolve to a `Response`.
+
+```typescript
+const router = new Router<Deno.ServeHandlerInfo>();
+
+router.get({pathname: '/ip'}, (request, response, {platform}) => {
+  return new Response(platform?.remoteAddr.hostname);
+});
+
+Deno.serve(
+  (request, info) => router.handle(request, info);
+);
+```
+
 ## Notes
 
 Only Deno and Chromium based browsers have [URL Pattern API support](https://developer.mozilla.org/en-US/docs/Web/API/URLPattern) right now.

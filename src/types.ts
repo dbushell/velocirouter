@@ -12,32 +12,32 @@ export type MaybeResponse = Response | undefined | void | null;
 export type HandleResponse = MaybeResponse | Promise<MaybeResponse>;
 
 /** Additional properties passed to route handlers */
-export interface HandleProps {
+export interface HandleProps<P> {
   /** Pattern matches from the Request URL */
   match: URLPatternResult;
   /** Platform specific context */
-  platform?: unknown;
+  platform?: P;
 }
 
 /** A route handler attached to a specific method */
-export interface Handle {
+export interface Handle<P = unknown> {
   (
     request: Request,
     response: MaybeResponse,
-    props: HandleProps
+    props: HandleProps<P>
   ): HandleResponse;
 }
 
-export type Route = {
+export type Route<P> = {
   order: number;
-  handle: Handle;
+  handle: Handle<P>;
   pattern: URLPattern | URLPatternInput;
 };
 
-export type Routes = Array<Route>;
+export type Routes<P> = Array<Route<P>>;
 
-export interface RouterMethod {
-  (pattern: Route['pattern'], ...handle: Handle[]): void;
+export interface RouterMethod<P> {
+  (pattern: Route<P>['pattern'], ...handle: Handle<P>[]): void;
 }
 
 export interface RouterOptions {

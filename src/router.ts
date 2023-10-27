@@ -10,23 +10,23 @@ import type {
   MaybeResponse
 } from './types.ts';
 
-export class Router {
+export class Router<P> {
   #onError: Exclude<RouterOptions['onError'], undefined>;
   #onNoMatch: Exclude<RouterOptions['onNoMatch'], undefined>;
-  #routes: Map<Method, Routes>;
+  #routes: Map<Method, Routes<P>>;
   #autoHead = true;
   #order = 0;
 
-  all!: RouterMethod;
-  connect!: RouterMethod;
-  delete!: RouterMethod;
-  get!: RouterMethod;
-  head!: RouterMethod;
-  options!: RouterMethod;
-  patch!: RouterMethod;
-  post!: RouterMethod;
-  put!: RouterMethod;
-  trace!: RouterMethod;
+  all!: RouterMethod<P>;
+  connect!: RouterMethod<P>;
+  delete!: RouterMethod<P>;
+  get!: RouterMethod<P>;
+  head!: RouterMethod<P>;
+  options!: RouterMethod<P>;
+  patch!: RouterMethod<P>;
+  post!: RouterMethod<P>;
+  put!: RouterMethod<P>;
+  trace!: RouterMethod<P>;
 
   constructor(options: RouterOptions = {}) {
     // Setup default response handlers
@@ -45,11 +45,11 @@ export class Router {
     }
   }
 
-  #add(method: Method, pattern: Route['pattern'], ...handle: Handle[]) {
+  #add(method: Method, pattern: Route<P>['pattern'], ...handle: Handle<P>[]) {
     this.use(handle, method, pattern);
   }
 
-  async #head(handle: Handle, ...args: Parameters<Handle>) {
+  async #head(handle: Handle<P>, ...args: Parameters<Handle<P>>) {
     const response = await handle(...args);
     if (response) {
       return new Response(null, response);
@@ -57,9 +57,9 @@ export class Router {
   }
 
   use(
-    handle: Handle | Handle[],
+    handle: Handle<P> | Handle<P>[],
     method: Method = 'ALL',
-    pattern: Route['pattern'] = '/*'
+    pattern: Route<P>['pattern'] = '/*'
   ) {
     if (Array.isArray(handle)) {
       for (const h of handle) {
@@ -77,7 +77,7 @@ export class Router {
     }
   }
 
-  async handle(request: Request, platform?: unknown): Promise<Response> {
+  async handle(request: Request, platform?: P): Promise<Response> {
     try {
       let response: MaybeResponse = undefined;
       // Get all middleware and method specific routes in order
