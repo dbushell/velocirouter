@@ -59,7 +59,7 @@ export class Router<P> {
   use(
     handle: Handle<P> | Handle<P>[],
     method: Method = 'ALL',
-    pattern: Route<P>['pattern'] = '/*'
+    pattern: Route<P>['pattern'] = {}
   ) {
     if (Array.isArray(handle)) {
       for (const h of handle) {
