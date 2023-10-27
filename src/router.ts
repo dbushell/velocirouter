@@ -15,6 +15,7 @@ export class Router {
   #onNoMatch: Exclude<RouterOptions['onNoMatch'], undefined>;
   #routes: Map<Method, Routes>;
   #autoHead = true;
+  #order = 0;
 
   all!: RouterMethod;
   connect!: RouterMethod;
@@ -66,9 +67,10 @@ export class Router {
       }
       return;
     }
-    this.#routes.get(method)!.push({handle, pattern});
+    this.#routes.get(method)!.push({order: this.#order++, handle, pattern});
     if (this.#autoHead && method === 'GET') {
       this.#routes.get('HEAD')!.push({
+        order: this.#order++,
         handle: this.#head.bind(this, handle),
         pattern
       });
@@ -78,11 +80,11 @@ export class Router {
   async handle(request: Request, platform?: unknown): Promise<Response> {
     try {
       let response: MaybeResponse = undefined;
-      // Get all middleware and method specific routes
+      // Get all middleware and method specific routes in order
       const routes = [
         ...Array.from(this.#routes.get(METHODS[0])!),
         ...Array.from(this.#routes.get(request.method as Method)!)
-      ];
+      ].toSorted((a, b) => a.order - b.order);
       // Pass request/response through each route
       for (const route of routes) {
         let pattern: URLPattern;

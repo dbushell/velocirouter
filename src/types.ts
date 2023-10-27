@@ -29,8 +29,9 @@ export interface Handle {
 }
 
 export type Route = {
-  pattern: URLPattern | URLPatternInput;
+  order: number;
   handle: Handle;
+  pattern: URLPattern | URLPatternInput;
 };
 
 export type Routes = Array<Route>;

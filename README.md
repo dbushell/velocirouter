@@ -2,9 +2,40 @@
 
 A minimal async `Request` → `Response` router powered by [URL Pattern API](https://urlpattern.spec.whatwg.org/) magic ✨
 
+```javascript
+const router = new Router();
+
+router.use((request, response) => {
+  console.log(`[${request.method}] ${request.url}`);
+  return response;
+});
+```
+
+Native JavaScript URL Pattern matching for routes.
+
+```javascript
+router.get({pathname: '/api/hello/:name'}, (request, response, {match}) => {
+  const {name} = match.pathname.groups;
+  return new Response(`Hello ${name}!`);
+});
+```
+
+Request & Response are forwarded through all matching routes in order.
+
+```javascript
+router.all('/api/*', (request, response) => {
+  if (response) {
+    response.headers.set('x-api-version', '1');
+  }
+  return response;
+});
+```
+
 Documentation coming...
 
 ## Notes
+
+Only Deno and Chromium based browsers have [URL Pattern API support](https://developer.mozilla.org/en-US/docs/Web/API/URLPattern) right now.
 
 Inspired by [Polka](https://github.com/lukeed/polka).
 
