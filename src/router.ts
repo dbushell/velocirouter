@@ -1,8 +1,9 @@
 import METHODS from './methods.ts';
 
 import type {
-  Handle,
   Method,
+  Handle,
+  Route,
   Routes,
   RouterMethod,
   RouterOptions,
@@ -43,7 +44,7 @@ export class Router {
     }
   }
 
-  #add(method: Method, pattern: URLPatternInput, ...handle: Handle[]) {
+  #add(method: Method, pattern: Route['pattern'], ...handle: Handle[]) {
     this.use(handle, method, pattern);
   }
 
@@ -57,7 +58,7 @@ export class Router {
   use(
     handle: Handle | Handle[],
     method: Method = 'ALL',
-    pattern: URLPatternInput = '/*'
+    pattern: Route['pattern'] = '/*'
   ) {
     if (Array.isArray(handle)) {
       for (const h of handle) {
@@ -85,7 +86,9 @@ export class Router {
       // Pass request/response through each route
       for (const route of routes) {
         let pattern: URLPattern;
-        if (typeof route.pattern === 'string') {
+        if (route.pattern instanceof URLPattern) {
+          pattern = route.pattern;
+        } else if (typeof route.pattern === 'string') {
           pattern = new URLPattern(route.pattern, request.url);
         } else {
           pattern = new URLPattern(route.pattern);

@@ -11,8 +11,6 @@ export type MaybeResponse = Response | undefined | void | null;
 /** Response type returned by route handlers */
 export type HandleResponse = MaybeResponse | Promise<MaybeResponse>;
 
-export type Routes = Array<{pattern: URLPatternInput; handle: Handle}>;
-
 /** Additional properties passed to route handlers */
 export interface HandleProps {
   /** Pattern matches from the Request URL */
@@ -30,8 +28,15 @@ export interface Handle {
   ): HandleResponse;
 }
 
+export type Route = {
+  pattern: URLPattern | URLPatternInput;
+  handle: Handle;
+};
+
+export type Routes = Array<Route>;
+
 export interface RouterMethod {
-  (pattern: URLPatternInput, ...handle: Handle[]): void;
+  (pattern: Route['pattern'], ...handle: Handle[]): void;
 }
 
 export interface RouterOptions {
