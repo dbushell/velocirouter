@@ -52,7 +52,10 @@ export class Router<P> {
   async #head(handle: Handle<P>, ...args: Parameters<Handle<P>>) {
     const response = await handle(...args);
     if (response) {
-      return new Response(null, response);
+      if (response.body) {
+        return new Response(null, response);
+      }
+      return response;
     }
   }
 
