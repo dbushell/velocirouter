@@ -51,7 +51,7 @@ Deno.serve(
 
 ## Notes
 
-Only Deno and Chromium based browsers have [URL Pattern API support](https://developer.mozilla.org/en-US/docs/Web/API/URLPattern) right now.
+Only Deno and Chromium based browsers have [URL Pattern API support](https://developer.mozilla.org/en-US/docs/Web/API/URLPattern) right now. Other runtimes like Bun and Node require a [polyfill](https://github.com/kenchris/urlpattern-polyfill).
 
 Inspired by [Polka](https://github.com/lukeed/polka).
 
