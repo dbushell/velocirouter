@@ -1,6 +1,6 @@
 {
-  "name": "velocirouter",
-  "version": "0.3.1",
+  "name": "@dbushell/velocirouter",
+  "version": "0.3.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dbushell/velocirouter.git"
