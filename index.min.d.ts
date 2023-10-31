@@ -1,6 +1,14 @@
-import METHODS from './methods.ts';
-
-export type Method = (typeof METHODS)[number];
+export type Method =
+  | 'ALL'
+  | 'CONNECT'
+  | 'DELETE'
+  | 'GET'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'PATCH'
+  | 'POST'
+  | 'PUT'
+  | 'TRACE';
 
 /** Response type returned by final handler to server */
 export type AsyncResponse = Response | Promise<Response>;
@@ -47,4 +55,24 @@ export interface RouterOptions {
   onNoMatch?: (request: Request) => AsyncResponse;
   /** Generate `HEAD` routes for each `GET` route added */
   autoHead?: boolean;
+}
+
+declare class Router<P> {
+  constructor(options?: RouterOptions);
+  all: RouterMethod<P>;
+  connect: RouterMethod<P>;
+  delete: RouterMethod<P>;
+  get: RouterMethod<P>;
+  head: RouterMethod<P>;
+  options: RouterMethod<P>;
+  patch: RouterMethod<P>;
+  post: RouterMethod<P>;
+  put: RouterMethod<P>;
+  trace: RouterMethod<P>;
+  use(
+    handle: Handle<P> | Handle<P>[],
+    method?: Method,
+    pattern?: Route<P>['pattern']
+  ): void;
+  handle(request: Request, platform?: P): Promise<Response>;
 }

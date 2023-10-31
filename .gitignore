@@ -6,3 +6,6 @@
 !src
 src/*
 !src/*.ts
+!index.min.d.ts
+!index.min.js
+!package.json
