@@ -88,8 +88,14 @@ export class Router<P> {
         ...Array.from(this.#routes.get(METHODS[0])!),
         ...Array.from(this.#routes.get(request.method as Method)!)
       ].toSorted((a, b) => a.order - b.order);
+      // Allow handlers to skip remaing routes
+      let stopped = false;
+      const stopPropagation = () => {
+        stopped = true;
+      };
       // Pass request/response through each route
       for (const route of routes) {
+        if (stopped) break;
         let pattern: URLPattern;
         if (route.pattern instanceof URLPattern) {
           pattern = route.pattern;
@@ -102,7 +108,8 @@ export class Router<P> {
         if (!match) continue;
         let maybe = route.handle(request, response, {
           match,
-          platform
+          platform,
+          stopPropagation
         });
         maybe = await Promise.resolve(maybe);
         if (maybe) {

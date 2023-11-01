@@ -17,6 +17,8 @@ export interface HandleProps<P> {
   match: URLPatternResult;
   /** Platform specific context */
   platform?: P;
+  /** Send response immediately and stop further propagation */
+  stopPropagation: () => void;
 }
 
 /** A route handler attached to a specific method */
