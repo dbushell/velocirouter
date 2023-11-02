@@ -11,8 +11,8 @@ import type {
 } from './types.ts';
 
 export class Router<P> {
-  #onError: Exclude<RouterOptions['onError'], undefined>;
-  #onNoMatch: Exclude<RouterOptions['onNoMatch'], undefined>;
+  #onError: Exclude<RouterOptions<P>['onError'], undefined>;
+  #onNoMatch: Exclude<RouterOptions<P>['onNoMatch'], undefined>;
   #routes: Map<Method, Routes<P>>;
   #autoHead = true;
   #order = 0;
@@ -28,7 +28,7 @@ export class Router<P> {
   put!: RouterMethod<P>;
   trace!: RouterMethod<P>;
 
-  constructor(options: RouterOptions = {}) {
+  constructor(options: RouterOptions<P> = {}) {
     // Setup default response handlers
     this.#onError =
       options.onError ?? (() => new Response(null, {status: 500}));
@@ -45,11 +45,11 @@ export class Router<P> {
     }
   }
 
-  set onError(handle: Exclude<RouterOptions['onError'], undefined>) {
+  set onError(handle: Exclude<RouterOptions<P>['onError'], undefined>) {
     this.#onError = handle;
   }
 
-  set onNoMatch(handle: Exclude<RouterOptions['onNoMatch'], undefined>) {
+  set onNoMatch(handle: Exclude<RouterOptions<P>['onNoMatch'], undefined>) {
     this.#onNoMatch = handle;
   }
 
@@ -124,9 +124,9 @@ export class Router<P> {
           response = maybe;
         }
       }
-      return response ?? this.#onNoMatch(request);
+      return response ?? this.#onNoMatch(request, platform);
     } catch (err) {
-      return this.#onError(err, request);
+      return this.#onError(err, request, platform);
     }
   }
 }

@@ -42,11 +42,11 @@ export interface RouterMethod<P> {
   (pattern: Route<P>['pattern'], ...handle: Handle<P>[]): void;
 }
 
-export interface RouterOptions {
+export interface RouterOptions<P> {
   /** Fallback handler if an error is thrown (500 response is default) */
-  onError?: (error: unknown, request: Request) => AsyncResponse;
+  onError?: (error: unknown, request: Request, platform?: P) => AsyncResponse;
   /** Fallback handler if no matches are found (404 response is default) */
-  onNoMatch?: (request: Request) => AsyncResponse;
+  onNoMatch?: (request: Request, platform?: P) => AsyncResponse;
   /** Generate `HEAD` routes for each `GET` route added */
   autoHead?: boolean;
 }
