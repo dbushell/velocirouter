@@ -45,6 +45,14 @@ export class Router<P> {
     }
   }
 
+  set onError(handle: Exclude<RouterOptions['onError'], undefined>) {
+    this.#onError = handle;
+  }
+
+  set onNoMatch(handle: Exclude<RouterOptions['onNoMatch'], undefined>) {
+    this.#onNoMatch = handle;
+  }
+
   #add(method: Method, pattern: Route<P>['pattern'], ...handle: Handle<P>[]) {
     this.use(handle, method, pattern);
   }

@@ -61,6 +61,8 @@ export interface RouterOptions {
 
 declare class Router<P> {
   constructor(options?: RouterOptions);
+  set onError(handle: Exclude<RouterOptions['onError'], undefined>);
+  set onNoMatch(handle: Exclude<RouterOptions['onNoMatch'], undefined>);
   all: RouterMethod<P>;
   connect: RouterMethod<P>;
   delete: RouterMethod<P>;
