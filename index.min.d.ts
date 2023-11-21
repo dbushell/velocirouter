@@ -14,10 +14,19 @@ export type Method =
 export type AsyncResponse = Response | Promise<Response>;
 
 /** Response type passed forward through matching route handlers */
-export type MaybeResponse = Response | undefined | void | null;
+export type MaybeResponse = Response | undefined | void;
+
+/** Optional type returned by route handlers */
+export type RequestResponse = {
+  request?: Request;
+  response?: MaybeResponse;
+};
 
 /** Response type returned by route handlers */
-export type HandleResponse = MaybeResponse | Promise<MaybeResponse>;
+export type HandleResponse =
+  | MaybeResponse
+  | RequestResponse
+  | Promise<MaybeResponse | RequestResponse>;
 
 /** Additional properties passed to route handlers */
 export interface HandleProps<P> {

@@ -7,7 +7,9 @@ import type {
   Routes,
   RouterMethod,
   RouterOptions,
-  MaybeResponse
+  MaybeResponse,
+  RequestResponse,
+  HandleResponse
 } from './types.ts';
 
 export class Router<P> {
@@ -57,8 +59,28 @@ export class Router<P> {
     this.use(handle, method, pattern);
   }
 
+  async #resolve(
+    request: Request,
+    maybe: HandleResponse
+  ): Promise<RequestResponse> {
+    let response: MaybeResponse;
+    maybe = await Promise.resolve(maybe);
+    if (maybe instanceof Response) {
+      response = maybe;
+    } else {
+      if (maybe?.response instanceof Response) {
+        response = maybe.response;
+      }
+      if (maybe?.request instanceof Request) {
+        request = maybe.request;
+      }
+    }
+    return {request, response};
+  }
+
   async #head(handle: Handle<P>, ...args: Parameters<Handle<P>>) {
-    const response = await handle(...args);
+    const maybe = await handle(...args);
+    const {response} = await this.#resolve(args[0], maybe);
     if (response) {
       if (response.body) {
         return new Response(null, response);
@@ -114,14 +136,18 @@ export class Router<P> {
         }
         const match = pattern.exec(request.url);
         if (!match) continue;
-        let maybe = route.handle(request, response, {
+        const maybe = route.handle(request, response, {
           match,
           platform,
           stopPropagation
         });
-        maybe = await Promise.resolve(maybe);
-        if (maybe) {
-          response = maybe;
+        const {response: newResponse, request: newRequest} =
+          await this.#resolve(request, maybe);
+        if (newResponse instanceof Response) {
+          response = newResponse;
+        }
+        if (newRequest instanceof Request) {
+          request = newRequest;
         }
       }
       return response ?? this.#onNoMatch(request, platform);
