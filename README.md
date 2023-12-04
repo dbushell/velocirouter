@@ -2,6 +2,8 @@
 
 A minimal async `Request` → `Response` router powered by [URL Pattern API](https://urlpattern.spec.whatwg.org/) magic ✨
 
+[velocirouter.deno.dev](https://velocirouter.deno.dev)
+
 ```javascript
 const router = new Router();
 
@@ -20,7 +22,7 @@ router.get({pathname: '/api/hello/:name'}, (request, response, {match}) => {
 });
 ```
 
-Request & Response are forwarded through all matching routes in order.
+`Request` & `Response` are forwarded through all matching routes in order.
 
 ```javascript
 router.all('/api/*', (request, response) => {
@@ -31,23 +33,9 @@ router.all('/api/*', (request, response) => {
 });
 ```
 
-Documentation coming...
+## Documentation
 
-## Deno Server
-
-The `handle()` method forwards a `Request` via all matching routes in the order they were created. It will resolve to a `Response`.
-
-```typescript
-const router = new Router<Deno.ServeHandlerInfo>();
-
-router.get({pathname: '/ip'}, (request, response, {platform}) => {
-  return new Response(platform?.remoteAddr.hostname);
-});
-
-Deno.serve(
-  (request, info) => router.handle(request, info);
-);
-```
+Find more documentation and usage at [velocirouter.deno.dev](https://velocirouter.deno.dev).
 
 ## Notes
 
