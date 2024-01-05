@@ -2,7 +2,7 @@
 
 A minimal async `Request` → `Response` router powered by [URL Pattern API](https://urlpattern.spec.whatwg.org/) magic ✨
 
-[velocirouter.deno.dev](https://velocirouter.deno.dev)
+[router.dinoear.com](https://router.dinoear.com)
 
 ```javascript
 const router = new Router();
@@ -35,7 +35,7 @@ router.all('/api/*', (request, response) => {
 
 ## Documentation
 
-Find more documentation and usage at [velocirouter.deno.dev](https://velocirouter.deno.dev).
+Find more documentation and usage at [router.dinoear.com](https://router.dinoear.com).
 
 ## Notes
 
