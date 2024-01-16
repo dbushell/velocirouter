@@ -91,7 +91,7 @@ export class Router<P> {
 
   use(
     handle: Handle<P> | Handle<P>[],
-    method: Method = 'ALL',
+    method: Method | undefined = undefined,
     pattern: Route<P>['pattern'] = {}
   ) {
     if (Array.isArray(handle)) {
@@ -100,7 +100,13 @@ export class Router<P> {
       }
       return;
     }
-    this.#routes.get(method)!.push({order: this.#order++, handle, pattern});
+    let order = this.#order++;
+    // Ensure middleware is always first
+    if (!method) {
+      method = METHODS[0];
+      order = Number.MIN_SAFE_INTEGER + order;
+    }
+    this.#routes.get(method)!.push({order, handle, pattern});
     if (this.#autoHead && method === 'GET') {
       this.#routes.get('HEAD')!.push({
         order: this.#order++,
