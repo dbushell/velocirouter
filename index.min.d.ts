@@ -28,12 +28,15 @@ export type HandleResponse =
   | RequestResponse
   | Promise<MaybeResponse | RequestResponse>;
 
+/** Platform specific context default type */
+export type Platform = Record<string | number | symbol, never>;
+
 /** Additional properties passed to route handlers */
 export interface HandleProps<P> {
   /** Pattern matches from the Request URL */
   match: URLPatternResult;
   /** Platform specific context */
-  platform?: P;
+  platform: P;
   /** Send response immediately and stop further propagation */
   stopPropagation: () => void;
 }
@@ -61,9 +64,9 @@ export interface RouterMethod<P> {
 
 export interface RouterOptions<P> {
   /** Fallback handler if an error is thrown (500 response is default) */
-  onError?: (error: unknown, request: Request, platform?: P) => AsyncResponse;
+  onError?: (error: unknown, request: Request, platform: P) => AsyncResponse;
   /** Fallback handler if no matches are found (404 response is default) */
-  onNoMatch?: (request: Request, platform?: P) => AsyncResponse;
+  onNoMatch?: (request: Request, platform: P) => AsyncResponse;
   /** Generate `HEAD` routes for each `GET` route added */
   autoHead?: boolean;
 }

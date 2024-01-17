@@ -9,10 +9,11 @@ import type {
   RouterOptions,
   MaybeResponse,
   RequestResponse,
-  HandleResponse
+  HandleResponse,
+  Platform
 } from './types.ts';
 
-export class Router<P> {
+export class Router<P = Platform> {
   #onError: Exclude<RouterOptions<P>['onError'], undefined>;
   #onNoMatch: Exclude<RouterOptions<P>['onNoMatch'], undefined>;
   #routes: Map<Method, Routes<P>>;
@@ -117,6 +118,7 @@ export class Router<P> {
   }
 
   async handle(request: Request, platform?: P): Promise<Response> {
+    platform ??= {} as P;
     try {
       let response: MaybeResponse = undefined;
       // Get all middleware and method specific routes in order
