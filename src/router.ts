@@ -1,4 +1,5 @@
 import METHODS from './methods.ts';
+import {deepFreeze} from './utils.ts';
 
 import type {
   Method,
@@ -144,6 +145,7 @@ export class Router<P = Platform> {
         }
         const match = pattern.exec(request.url);
         if (!match) continue;
+        deepFreeze(match);
         const maybe = route.handle(request, response, {
           match,
           platform,
