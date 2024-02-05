@@ -8,9 +8,8 @@ import type {
   Routes,
   RouterMethod,
   RouterOptions,
-  MaybeResponse,
-  RequestResponse,
   HandleResponse,
+  HandleProps,
   Platform
 } from './types.ts';
 
@@ -61,34 +60,48 @@ export class Router<P = Platform> {
     this.use(handle, method, pattern);
   }
 
-  async #resolve(
-    request: Request,
-    maybe: HandleResponse
-  ): Promise<RequestResponse> {
-    let response: MaybeResponse;
-    maybe = await Promise.resolve(maybe);
-    if (maybe instanceof Response) {
-      response = maybe;
-    } else {
-      if (maybe?.response instanceof Response) {
-        response = maybe.response;
-      }
-      if (maybe?.request instanceof Request) {
-        request = maybe.request;
-      }
+  async #head(handle: Handle<P>, props: HandleProps<P>) {
+    const {request} = props;
+    const {response} = await this.resolve(request, handle(props));
+    if (response) {
+      return {request, response: new Response(null, response)};
     }
-    return {request, response};
+    return {request};
   }
 
-  async #head(handle: Handle<P>, ...args: Parameters<Handle<P>>) {
-    const maybe = await handle(...args);
-    const {response} = await this.#resolve(args[0], maybe);
-    if (response) {
-      if (response.body) {
-        return new Response(null, response);
-      }
-      return response;
+  /** Resolve and unwrap a handle response */
+  async resolve(request: Request, response: HandleResponse) {
+    // Final return object
+    const resolved: {
+      request: Request;
+      response?: Response | null;
+    } = {request};
+    // Resolve handle
+    const maybe = await Promise.resolve(response);
+    // Handle had no impact
+    if (maybe === undefined) {
+      return resolved;
     }
+    // Handle reset or modified response only
+    if (maybe === null || maybe instanceof Response) {
+      resolved.response = maybe;
+      return resolved;
+    }
+    // Handle modified request
+    if (maybe.request instanceof Request) {
+      resolved.request = maybe.request;
+    }
+    // Resolve response
+    maybe.response = await Promise.resolve(maybe.response);
+    // Handle modified response
+    if (maybe.response instanceof Response) {
+      resolved.response = maybe.response;
+    }
+    // Handle reset response
+    else if (maybe.response === null) {
+      resolved.response = undefined;
+    }
+    return resolved;
   }
 
   use(
@@ -121,7 +134,7 @@ export class Router<P = Platform> {
   async handle(request: Request, platform?: P): Promise<Response> {
     platform ??= {} as P;
     try {
-      let response: MaybeResponse = undefined;
+      let response: Response | undefined;
       // Get all middleware and method specific routes in order
       const routes = [
         ...Array.from(this.#routes.get(METHODS[0])!),
@@ -146,18 +159,24 @@ export class Router<P = Platform> {
         const match = pattern.exec(request.url);
         if (!match) continue;
         deepFreeze(match);
-        const maybe = route.handle(request, response, {
+        const maybe = route.handle({
+          request,
+          response,
           match,
           platform,
           stopPropagation
         });
-        const {response: newResponse, request: newRequest} =
-          await this.#resolve(request, maybe);
-        if (newResponse instanceof Response) {
-          response = newResponse;
-        }
+        const {response: newResponse, request: newRequest} = await this.resolve(
+          request,
+          maybe
+        );
         if (newRequest instanceof Request) {
           request = newRequest;
+        }
+        if (newResponse instanceof Response) {
+          response = newResponse;
+        } else if (newResponse === null) {
+          response = undefined;
         }
       }
       return response ?? this.#onNoMatch(request, platform);

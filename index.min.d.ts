@@ -10,29 +10,27 @@ export type Method =
   | 'PUT'
   | 'TRACE';
 
-/** Response type returned by final handler to server */
 export type AsyncResponse = Response | Promise<Response>;
 
-/** Response type passed forward through matching route handlers */
-export type MaybeResponse = Response | undefined | void;
-
-/** Optional type returned by route handlers */
+/** Optional return type from route handlers */
 export type RequestResponse = {
   request?: Request;
-  response?: MaybeResponse;
+  response?: null | AsyncResponse;
 };
 
-/** Response type returned by route handlers */
+/** Return types from route handlers */
 export type HandleResponse =
-  | MaybeResponse
+  | void
+  | undefined
+  | null
+  | Response
   | RequestResponse
-  | Promise<MaybeResponse | RequestResponse>;
+  | Promise<undefined | null | Response | RequestResponse>;
 
-/** Platform specific context default type */
-export type Platform = Record<string | number | symbol, never>;
-
-/** Additional properties passed to route handlers */
+/** Properties passed to route handlers */
 export interface HandleProps<P> {
+  request: Request;
+  response?: Response;
   /** Pattern matches from the Request URL */
   match: URLPatternResult;
   /** Platform specific context */
@@ -41,13 +39,9 @@ export interface HandleProps<P> {
   stopPropagation: () => void;
 }
 
-/** A route handler attached to a specific method */
-export interface Handle<P = unknown> {
-  (
-    request: Request,
-    response: MaybeResponse,
-    props: HandleProps<P>
-  ): HandleResponse;
+/** Route handler function */
+export interface Handle<P> {
+  (props: HandleProps<P>): HandleResponse;
 }
 
 export type Route<P> = {
@@ -71,7 +65,10 @@ export interface RouterOptions<P> {
   autoHead?: boolean;
 }
 
-declare class Router<P> {
+/** Platform specific context default type */
+export type Platform = Record<string | number | symbol, never>;
+
+declare class Router<P = Platform> {
   constructor(options?: RouterOptions<P>);
   set onError(handle: Exclude<RouterOptions<P>['onError'], undefined>);
   set onNoMatch(handle: Exclude<RouterOptions<P>['onNoMatch'], undefined>);
@@ -85,6 +82,13 @@ declare class Router<P> {
   post: RouterMethod<P>;
   put: RouterMethod<P>;
   trace: RouterMethod<P>;
+  resolve(
+    request: Request,
+    response: HandleResponse
+  ): Promise<{
+    request: Request;
+    response?: Response | null;
+  }>;
   use(
     handle: Handle<P> | Handle<P>[],
     method?: Method,
