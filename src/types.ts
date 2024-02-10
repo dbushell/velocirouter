@@ -39,13 +39,13 @@ export interface Handle<P> {
 export type Route<P> = {
   order: number;
   handle: Handle<P>;
-  pattern: URLPattern | URLPatternInput;
+  pattern: URLPattern;
 };
 
 export type Routes<P> = Array<Route<P>>;
 
 export interface RouterMethod<P> {
-  (pattern: Route<P>['pattern'], ...handle: Handle<P>[]): void;
+  (pattern: URLPatternInput, ...handle: Array<Handle<P>>): void;
 }
 
 export interface RouterOptions<P> {

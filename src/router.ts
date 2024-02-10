@@ -4,7 +4,6 @@ import {deepFreeze} from './utils.ts';
 import type {
   Method,
   Handle,
-  Route,
   Routes,
   RouterMethod,
   RouterOptions,
@@ -56,7 +55,7 @@ export class Router<P = Platform> {
     this.#onNoMatch = handle;
   }
 
-  #add(method: Method, pattern: Route<P>['pattern'], ...handle: Handle<P>[]) {
+  #add(method: Method, pattern: URLPatternInput, ...handle: Array<Handle<P>>) {
     this.use(handle, method, pattern);
   }
 
@@ -105,10 +104,18 @@ export class Router<P = Platform> {
   }
 
   use(
-    handle: Handle<P> | Handle<P>[],
-    method: Method | undefined = undefined,
-    pattern: Route<P>['pattern'] = {}
+    handle: Handle<P> | Array<Handle<P>>,
+    method?: Method,
+    input: URLPatternInput = {}
   ) {
+    let pattern: URLPattern;
+    if (input instanceof URLPattern) {
+      pattern = input;
+    } else if (typeof input === 'string') {
+      pattern = new URLPattern({pathname: input});
+    } else {
+      pattern = new URLPattern(input);
+    }
     if (Array.isArray(handle)) {
       for (const h of handle) {
         this.use(h, method, pattern);
@@ -148,15 +155,7 @@ export class Router<P = Platform> {
       // Pass request/response through each route
       for (const route of routes) {
         if (stopped) break;
-        let pattern: URLPattern;
-        if (route.pattern instanceof URLPattern) {
-          pattern = route.pattern;
-        } else if (typeof route.pattern === 'string') {
-          pattern = new URLPattern(route.pattern, request.url);
-        } else {
-          pattern = new URLPattern(route.pattern);
-        }
-        const match = pattern.exec(request.url);
+        const match = route.pattern.exec(request.url);
         if (!match) continue;
         deepFreeze(match);
         const maybe = route.handle({
