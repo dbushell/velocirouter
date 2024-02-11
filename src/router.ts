@@ -144,8 +144,8 @@ export class Router<P = Platform> {
       let response: Response | undefined;
       // Get all middleware and method specific routes in order
       const routes = [
-        ...Array.from(this.#routes.get(METHODS[0])!),
-        ...Array.from(this.#routes.get(request.method as Method)!)
+        ...this.#routes.get(METHODS[0])!,
+        ...this.#routes.get(request.method as Method)!
       ].toSorted((a, b) => a.order - b.order);
       // Allow handlers to skip remaing routes
       let stopped = false;
