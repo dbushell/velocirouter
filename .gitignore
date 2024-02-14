@@ -1,11 +1,13 @@
 /*
 !.gitignore
+!.github
 !LICENSE
 !README.md
+!deno.json
 !mod.ts
-!src
-src/*
-!src/*.ts
 !index.min.d.ts
 !index.min.js
 !package.json
+!src
+src/*
+!src/*.ts
