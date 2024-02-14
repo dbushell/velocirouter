@@ -8,6 +8,7 @@ import type {
   RouterMethod,
   RouterOptions,
   HandleResponse,
+  HandleResolve,
   HandleProps,
   Platform
 } from './types.ts';
@@ -69,12 +70,12 @@ export class Router<P = Platform> {
   }
 
   /** Resolve and unwrap a handle response */
-  async resolve(request: Request, response: HandleResponse) {
+  async resolve(
+    request: Request,
+    response: HandleResponse
+  ): Promise<HandleResolve> {
     // Final return object
-    const resolved: {
-      request: Request;
-      response?: Response | null;
-    } = {request};
+    const resolved: HandleResolve = {request};
     // Resolve handle
     const maybe = await Promise.resolve(response);
     // Handle had no impact
@@ -107,7 +108,7 @@ export class Router<P = Platform> {
     handle: Handle<P> | Array<Handle<P>>,
     method?: Method,
     input: URLPatternInput = {}
-  ) {
+  ): void {
     let pattern: URLPattern;
     if (input instanceof URLPattern) {
       pattern = input;

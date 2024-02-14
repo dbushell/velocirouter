@@ -36,6 +36,11 @@ export interface Handle<P> {
   (props: HandleProps<P>): HandleResponse;
 }
 
+export interface HandleResolve {
+  request: Request;
+  response?: null | Response;
+}
+
 export type Route<P> = {
   order: number;
   handle: Handle<P>;
