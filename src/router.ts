@@ -13,6 +13,9 @@ import type {
   Platform
 } from './types.ts';
 
+/**
+ * Router class
+ */
 export class Router<P = Platform> {
   #onError: Exclude<RouterOptions<P>['onError'], undefined>;
   #onNoMatch: Exclude<RouterOptions<P>['onNoMatch'], undefined>;
@@ -20,17 +23,31 @@ export class Router<P = Platform> {
   #autoHead = true;
   #order = 0;
 
+  /** Attach a route handle for all HTTP methods */
   all!: RouterMethod<P>;
+  /** Attach a `CONNECT` HTTP method handle */
   connect!: RouterMethod<P>;
+  /** Attach a `DELETE` HTTP method handle */
   delete!: RouterMethod<P>;
+  /** Attach a `GET` HTTP method handle */
   get!: RouterMethod<P>;
+  /** Attach a `HEAD` HTTP method handle */
   head!: RouterMethod<P>;
+  /** Attach a `OPTIONS` HTTP method handle */
   options!: RouterMethod<P>;
+  /** Attach a `PATCH` HTTP method handle */
   patch!: RouterMethod<P>;
+  /** Attach a `POST` HTTP method handle */
   post!: RouterMethod<P>;
+  /** Attach a `PUT` HTTP method handle */
   put!: RouterMethod<P>;
+  /** Attach a `TRACE` HTTP method handle */
   trace!: RouterMethod<P>;
 
+  /**
+   * Create a new Router
+   * @param options {@link RouterOptions} {@link Platform}
+   */
   constructor(options: RouterOptions<P> = {}) {
     // Setup default response handlers
     this.#onError =
@@ -48,10 +65,16 @@ export class Router<P = Platform> {
     }
   }
 
+  /**
+   * Set the fallback handle for when an error is thrown in a route handle
+   */
   set onError(handle: Exclude<RouterOptions<P>['onError'], undefined>) {
     this.#onError = handle;
   }
 
+  /**
+   * Set the fallback handle for when no matching handles are found for a request
+   */
   set onNoMatch(handle: Exclude<RouterOptions<P>['onNoMatch'], undefined>) {
     this.#onNoMatch = handle;
   }
@@ -69,7 +92,12 @@ export class Router<P = Platform> {
     return {request};
   }
 
-  /** Resolve and unwrap a handle response */
+  /**
+   * Resolve and unwrap a handle response
+   * @param request   The request
+   * @param response  The handle response {@link HandleResponse}
+   * @returns The resolved request and response {@link HandleResolve}
+   */
   async resolve(
     request: Request,
     response: HandleResponse
@@ -104,6 +132,12 @@ export class Router<P = Platform> {
     return resolved;
   }
 
+  /**
+   * Attach a route handle to match an HTTP method and URL pattern
+   * @param handle  Callback handle(s)
+   * @param method  HTTP method
+   * @param input   `URLPattern` input
+   */
   use(
     handle: Handle<P> | Array<Handle<P>>,
     method?: Method,
@@ -139,6 +173,12 @@ export class Router<P = Platform> {
     }
   }
 
+  /**
+   * Pass a request through all matching route handles and return a response
+   * @param request   The `Request`
+   * @param platform  Platform specific context {@link Platform}
+   * @returns The final `Response`
+   */
   async handle(request: Request, platform?: P): Promise<Response> {
     platform ??= {} as P;
     try {

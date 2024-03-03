@@ -1,6 +1,6 @@
 {
   "name": "@ssr/velocirouter",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "exports": {
     ".": "./mod.ts",
     "./types": "./src/types.ts"

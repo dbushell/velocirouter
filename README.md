@@ -4,6 +4,10 @@ A minimal async `Request` → `Response` router powered by [URL Pattern API](htt
 
 [Documentation](https://ssr.rocks/docs/velocirouter/)
 
+## Usage
+
+Add dependency from JSR: [@ssr/velocirouter](https://jsr.io/@ssr/velocirouter)
+
 ```javascript
 const router = new Router();
 

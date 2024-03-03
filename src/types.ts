@@ -1,3 +1,7 @@
+/**
+ * @module
+ * Types for `jsr:@ssr/velocirouter`
+ */
 import METHODS from './methods.ts';
 
 export type Method = (typeof METHODS)[number];
