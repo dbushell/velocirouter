@@ -10,15 +10,16 @@ export type Method =
   | 'PUT'
   | 'TRACE';
 
+/** `Response` (asynchronous or resolved) */
 export type AsyncResponse = Response | Promise<Response>;
 
-/** Optional return type from route handlers */
+/** Optional return type from a route handle */
 export type RequestResponse = {
   request?: Request;
   response?: null | AsyncResponse;
 };
 
-/** Return types from route handlers */
+/** Valid return types from a route handle */
 export type HandleResponse =
   | void
   | undefined
@@ -27,7 +28,7 @@ export type HandleResponse =
   | RequestResponse
   | Promise<undefined | null | Response | RequestResponse>;
 
-/** Properties passed to route handlers */
+/** Properties passed to route handles */
 export interface HandleProps<P> {
   request: Request;
   response?: Response;
@@ -39,32 +40,37 @@ export interface HandleProps<P> {
   stopPropagation: () => void;
 }
 
-/** Route handler function */
+/** Route handle function */
 export interface Handle<P> {
   (props: HandleProps<P>): HandleResponse;
 }
 
+/** Resolve handle return type */
 export interface HandleResolve {
   request: Request;
   response?: null | Response;
 }
 
+/** Internal route object */
 export type Route<P> = {
   order: number;
   handle: Handle<P>;
   pattern: URLPattern;
 };
 
+/** Internal route object array */
 export type Routes<P> = Array<Route<P>>;
 
+/** Router class method for attaching HTTP method handles */
 export interface RouterMethod<P> {
   (pattern: URLPatternInput, ...handle: Array<Handle<P>>): void;
 }
 
+/** Init options for Router class */
 export interface RouterOptions<P> {
-  /** Fallback handler if an error is thrown (500 response is default) */
+  /** Fallback handle if an error is thrown (500 response is default) */
   onError?: (error: unknown, request: Request, platform: P) => AsyncResponse;
-  /** Fallback handler if no matches are found (404 response is default) */
+  /** Fallback handle if no matches are found (404 response is default) */
   onNoMatch?: (request: Request, platform: P) => AsyncResponse;
   /** Generate `HEAD` routes for each `GET` route added */
   autoHead?: boolean;

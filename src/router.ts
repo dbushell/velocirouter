@@ -49,7 +49,7 @@ export class Router<P = Platform> {
    * @param options {@link RouterOptions} {@link Platform}
    */
   constructor(options: RouterOptions<P> = {}) {
-    // Setup default response handlers
+    // Setup default response handles
     this.#onError =
       options.onError ?? (() => new Response(null, {status: 500}));
     this.#onNoMatch =
@@ -188,7 +188,7 @@ export class Router<P = Platform> {
         ...this.#routes.get(METHODS[0])!,
         ...this.#routes.get(request.method as Method)!
       ].toSorted((a, b) => a.order - b.order);
-      // Allow handlers to skip remaing routes
+      // Allow handles to skip remaing routes
       let stopped = false;
       const stopPropagation = () => {
         stopped = true;
