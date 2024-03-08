@@ -1,8 +1,12 @@
 {
   "name": "@ssr/velocirouter",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "exports": {
     ".": "./mod.ts",
     "./types": "./src/types.ts"
+  },
+  "publish": {
+    "include": ["src", "deno.json", "mod.ts", "LICENSE", "README.md"],
+    "exclude": [".github", "index.min.d.ts", "index.min.js", "package.json"]
   }
 }
