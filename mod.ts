@@ -1,6 +1,7 @@
 /**
  * @module
- * Router and types for `jsr:@ssr/velocirouter`
+ *
+ * Router and types for `jsr:@ssr/velocirouter`.
  *
  * ```js
  * const router = new Router();

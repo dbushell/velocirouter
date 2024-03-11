@@ -1,6 +1,7 @@
 /**
+ * Types for `jsr:@ssr/velocirouter`.
+ *
  * @module
- * Types for `jsr:@ssr/velocirouter`
  */
 import METHODS from './methods.ts';
 
