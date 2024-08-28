@@ -1,17 +1,26 @@
 {
-  "name": "velocirouter-js",
-  "version": "0.9.1",
+  "name": "@dbushell/velocirouter",
+  "version": "0.10.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dbushell/velocirouter.git"
   },
   "description": "A minimal async Request → Response router powered by URL Pattern API magic ✨",
+  "keywords": [
+    "typescript"
+  ],
   "license": "MIT",
   "type": "module",
-  "main": "index.min.js",
-  "types": "index.min.d.ts",
+  "exports": {
+    ".": "./mod.ts",
+    "./types": "./src/types.ts"
+  },
+  "types": "src/types.ts",
   "files": [
-    "index.min.js",
-    "index.min.d.ts"
+    "src",
+    "mod.ts",
+    "package.json",
+    "LICENSE",
+    "README.md"
   ]
 }

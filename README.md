@@ -1,5 +1,7 @@
 # 🦕 VelociRouter
 
+[![JSR](https://jsr.io/badges/@ssr/velocirouter?labelColor=98e6c8&color=333)](https://jsr.io/@ssr/velocirouter) [![NPM](https://img.shields.io/npm/v/@dbushell/velocirouter?labelColor=98e6c8&color=333)](https://www.npmjs.com/package/@dbushell/velocirouter)
+
 A minimal async `Request` → `Response` router powered by [URL Pattern API](https://urlpattern.spec.whatwg.org/) magic ✨
 
 ## Usage
