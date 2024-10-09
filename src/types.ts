@@ -5,6 +5,8 @@
  */
 import METHODS from './methods.ts';
 
+export type {Router} from './router.ts';
+
 /** Platform specific context default type */
 export type Platform = Record<PropertyKey, unknown>;
 
