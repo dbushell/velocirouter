@@ -11,8 +11,7 @@
  * });
  * ```
  */
-export * from './src/router.ts';
-export type {Router} from './src/router.ts';
+export {Router} from './src/router.ts';
 export type {
   Method,
   AsyncResponse,
